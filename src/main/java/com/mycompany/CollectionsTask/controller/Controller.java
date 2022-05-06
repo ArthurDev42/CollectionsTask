@@ -38,7 +38,7 @@ public class Controller {
                 
             // change language    
             } else if (inputCommandNumber == 5) {
-                
+                changeLanguage(scanner, inputCommandNumber);
                 System.out.println("language");
             // exit    
             } else if (inputCommandNumber == 6) {
@@ -57,7 +57,7 @@ public class Controller {
         }
         return weightAllSweets;
     }
-
+    // sort menu
     private static void sortBy(Scanner scanner, int inputCommandNumber) {
         DisplayConsoleUI.printSortMenu();
         try {
@@ -166,7 +166,7 @@ public class Controller {
             DisplayConsoleUI.printIncorrectInput();
         }
     }
-    
+    // find sweets containing a certain amount of sugar
     private static ArrayList<Sweetness> findSweets(int min, int max) {
         ArrayList<Sweetness> sweets = new ArrayList<Sweetness>();
         for(Sweetness s: arrayListSweetness) {
@@ -175,5 +175,23 @@ public class Controller {
             }
         }
         return sweets;
+    }
+
+    private static void changeLanguage(Scanner scanner, int inputCommandNumber) {
+        DisplayConsoleUI.changeLanguageMenu();
+        try {
+            inputCommandNumber = Integer.parseInt(scanner.next());
+        } catch (NumberFormatException e) {
+            DisplayConsoleUI.printIncorrectInput();
+        }
+        if(inputCommandNumber == 1) {
+            DisplayConsoleUI.getResourceManager().setLanguageEn();
+        } else if(inputCommandNumber == 2) {
+            DisplayConsoleUI.getResourceManager().setLanguageRu();
+        } else if(inputCommandNumber == 3) {
+            
+        } else {
+            DisplayConsoleUI.printIncorrectInput();
+        }
     }
 }

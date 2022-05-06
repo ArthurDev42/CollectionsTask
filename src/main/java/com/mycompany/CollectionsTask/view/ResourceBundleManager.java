@@ -5,9 +5,17 @@ import java.util.ResourceBundle;
 
 
 public class ResourceBundleManager {
-
+    public ResourceBundle resourceBundle = getResourceBundle();
+    
     public static ResourceBundle getResourceBundle() {
-        Locale.setDefault(new Locale("UK"));
         return ResourceBundle.getBundle("localization");
+    }
+    
+    public void setLanguageRu() {
+        resourceBundle = ResourceBundle.getBundle("localization", new Locale("ru", "RU"));
+    }
+    
+    public void setLanguageEn() {
+        resourceBundle = ResourceBundle.getBundle("localization", new Locale("en", "GB"));
     }
 }

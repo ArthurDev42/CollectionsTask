@@ -47,12 +47,12 @@ public class Factory {
         
     public static void saveTestDataToFile() {
         ArrayList<Sweetness> arr = new ArrayList<>();
-        arr.add(new Sweetness(12, "Candy #1", SweetnessType.CANDY, 15, 11, Manufacturer.SOUTHERN_BAKERY, 10));
-        arr.add(new Sweetness(11, "Candy #1", SweetnessType.CANDY, 15, 11, Manufacturer.SOUTHERN_BAKERY, 10));
-        arr.add(new Sweetness(2, "Candy #1", SweetnessType.CANDY, 15, 11, Manufacturer.SOUTHERN_BAKERY, 10));
-        arr.add(new Sweetness(3, "Candy #1", SweetnessType.MARSHMALLOW, 15, 11, Manufacturer.NORTHERN_SWEET_SHOP, 10));
-        arr.add(new Sweetness(4, "Candy #1", SweetnessType.MARSHMALLOW, 15, 11, Manufacturer.NORTHERN_SWEET_SHOP, 10));
-        arr.add(new Sweetness(1, "Candy #1", SweetnessType.CANDY, 15, 11, Manufacturer.NORTHERN_SWEET_SHOP, 10));
+        arr.add(new Sweetness(12, "Candy #1", SweetnessType.CANDY, 34, 11, Manufacturer.SOUTHERN_BAKERY, 16));
+        arr.add(new Sweetness(11, "Nut candies", SweetnessType.CANDY, 35, 14, Manufacturer.SOUTHERN_BAKERY, 18));
+        arr.add(new Sweetness(2, "Ann", SweetnessType.CANDY, 45, 12, Manufacturer.SOUTHERN_BAKERY, 18));
+        arr.add(new Sweetness(31, "Snow", SweetnessType.MARSHMALLOW, 78, 31, Manufacturer.NORTHERN_SWEET_SHOP, 21));
+        arr.add(new Sweetness(4, "Sweet #2", SweetnessType.MARSHMALLOW, 76, 31, Manufacturer.NORTHERN_SWEET_SHOP, 20));
+        arr.add(new Sweetness(1, "Candy #1", SweetnessType.CANDY, 37, 11, Manufacturer.NORTHERN_SWEET_SHOP, 19));
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL url = classLoader.getResource(Constants.SAVEDATA_FILE_PATH);
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(url.getPath()))) {
