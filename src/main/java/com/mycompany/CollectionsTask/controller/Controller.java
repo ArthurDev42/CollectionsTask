@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Controller { 
-    static ArrayList<Sweetness> arrayListSweetness;
+    static ArrayList<Sweetness> arrayListSweetness = Factory.readSweetnessArrayListFromFile();
+    
     public static void menu() {
         Scanner scanner = new Scanner(System.in);
         int inputCommandNumber = 0;
         DisplayConsoleUI.printGreetings();
+        // main menu
         do {
             DisplayConsoleUI.printBaseMenu();
             try {
@@ -19,24 +21,28 @@ public class Controller {
             } catch (NumberFormatException e) {
                 DisplayConsoleUI.printIncorrectInput();
             }
+            // show
             if(inputCommandNumber == 1) {
-                System.out.println("Unknown command, use \"help\" to get a list of available commands.");
+                DisplayConsoleUI.printShowText();
+                DisplayConsoleUI.printArrayListSweetness(arrayListSweetness);
+            // count weight gift    
             } else if (inputCommandNumber == 2) {
-                arrayListSweetness = Factory.readSweetnessArrayListFromFile();
-                System.out.println("Собрать детский подарок с определением его веса. ");
+                DisplayConsoleUI.printCreatedGiftAndCalculatedWeight(countWeightAllSweets());
+            // sort menu    
             } else if (inputCommandNumber == 3) {
-                System.out.println("ffff");
-                sortBy(scanner, inputCommandNumber, arrayListSweetness);
-                System.out.println("Провести сортировку конфет в подарке на основе одного из параметров. fffff");
+                sortBy(scanner, inputCommandNumber);
+                DisplayConsoleUI.printArrayListSweetness(arrayListSweetness);
+            // find by sugar content menu    
             } else if (inputCommandNumber == 4) {
-                System.out.println("Найти конфету в подарке, соответствующую заданному диапазону содержания сахара.");
+                findSweetnessBySugarContent(scanner);
+                
+            // change language    
             } else if (inputCommandNumber == 5) {
-                for(Sweetness s: arrayListSweetness) {
-                    System.out.println(s);
-                }
+                
                 System.out.println("language");
+            // exit    
             } else if (inputCommandNumber == 6) {
-                System.out.println("EXIT");
+                DisplayConsoleUI.closeProgram();
                 break;
             } else {
                 DisplayConsoleUI.printIncorrectInput();
@@ -52,24 +58,23 @@ public class Controller {
         return weightAllSweets;
     }
 
-    private static void sortBy(Scanner scanner, int inputCommandNumber, ArrayList<Sweetness> arrayListSweetness) {
+    private static void sortBy(Scanner scanner, int inputCommandNumber) {
         DisplayConsoleUI.printSortMenu();
-        System.out.println("enter 1");
         try {
                 inputCommandNumber = Integer.parseInt(scanner.next());
             } catch (NumberFormatException e) {
                 DisplayConsoleUI.printIncorrectInput();
             }
         if(inputCommandNumber == 1) {
-            quickSortById(arrayListSweetness, 0, arrayListSweetness.size()-1);
+            quickSortSweetness(0, arrayListSweetness.size()-1, "id");
         } else if (inputCommandNumber == 2) {
-            sortByTitle(arrayListSweetness);
+            quickSortSweetness(0, arrayListSweetness.size()-1, "title");
         } else if (inputCommandNumber == 3) {
-            sortByWeight(arrayListSweetness);
+            quickSortSweetness(0, arrayListSweetness.size()-1, "weight");
         } else if (inputCommandNumber == 4) {
-            sortBySugarContent(arrayListSweetness);
+            quickSortSweetness(0, arrayListSweetness.size()-1, "sugar");
         } else if (inputCommandNumber == 5) {
-            sortByPrice(arrayListSweetness);
+            quickSortSweetness(0, arrayListSweetness.size()-1, "price");
         } else if (inputCommandNumber == 6) {
             return;
         } else {
@@ -77,44 +82,98 @@ public class Controller {
         }
     }
     
-    private static int partition (ArrayList<Sweetness> arrayList, int start, int end) {  
-        Sweetness pivot = arrayList.get(end);
-        int i = start - 1;
-        for (int j = start; j <= end - 1; j++) {
-            if (arrayList.get(j).getId() < pivot.getId()) {  
-                i++;
-                Sweetness temp = arrayList.get(i);  
-                arrayList.set(i, arrayList.get(j));  
-                arrayList.set(j, temp);
-            }  
-        }
-        Sweetness t = arrayList.get(i+1);
-        arrayList.set(i+1, arrayList.get(end));
-        arrayList.set(end, t);
-        return (i + 1);  
-    }
-    
-    private static void quickSortById(ArrayList<Sweetness> arrayList, int start, int end) {  
-        if (start < end) {  
-        int p = partition(arrayList, start, end);  //p is partitioning index  
-        quickSortById(arrayList, start, p - 1);  
-        quickSortById(arrayList, p + 1, end);  
+    private static void quickSortSweetness(int start, int end, String fieldName) {  
+        if (start < end) {
+            int partitionIndex = sortPartition(start, end, fieldName);
+            quickSortSweetness(start, partitionIndex - 1, fieldName);  
+            quickSortSweetness(partitionIndex + 1, end, fieldName);  
         }  
     }
     
-    private static void sortByTitle(ArrayList<Sweetness> arrayListSweetness) {
-        if(arrayListSweetness.size() <= 1) return;
+    // used "switch-case" for avoid duplicate this section of code
+    private static int sortPartition (int start, int end, String fieldName) {  
+        Sweetness pivot = arrayListSweetness.get(end);
+        int i = start - 1;
+        for (int j = start; j <= end - 1; j++) {
+            switch(fieldName) {
+                case "id":
+                    if (arrayListSweetness.get(j).getId() < pivot.getId()) {  
+                        i++;
+                        Sweetness temp = arrayListSweetness.get(i);  
+                        arrayListSweetness.set(i, arrayListSweetness.get(j));  
+                        arrayListSweetness.set(j, temp);
+                    }  
+                    break;
+                case "title":
+                    if (arrayListSweetness.get(j).getTitle().compareToIgnoreCase(pivot.getTitle()) < 0) {  
+                        i++;
+                        Sweetness temp = arrayListSweetness.get(i);  
+                        arrayListSweetness.set(i, arrayListSweetness.get(j));  
+                        arrayListSweetness.set(j, temp);
+                    }
+                    break;
+                case "weight":
+                    if (arrayListSweetness.get(j).getWeight() < pivot.getWeight()) {  
+                        i++;
+                        Sweetness temp = arrayListSweetness.get(i);  
+                        arrayListSweetness.set(i, arrayListSweetness.get(j));  
+                        arrayListSweetness.set(j, temp);
+                    }
+                    break;
+                case "sugar":
+                    if (arrayListSweetness.get(j).getSugarContent() < pivot.getSugarContent()) {  
+                        i++;
+                        Sweetness temp = arrayListSweetness.get(i);  
+                        arrayListSweetness.set(i, arrayListSweetness.get(j));  
+                        arrayListSweetness.set(j, temp);
+                    }
+                    break;
+                case "price":
+                    if (arrayListSweetness.get(j).getPrice() < pivot.getPrice()) {  
+                        i++;
+                        Sweetness temp = arrayListSweetness.get(i);  
+                        arrayListSweetness.set(i, arrayListSweetness.get(j));  
+                        arrayListSweetness.set(j, temp);
+                    }
+                    break;    
+            }
+        }
+        Sweetness t = arrayListSweetness.get(i+1);
+        arrayListSweetness.set(i+1, arrayListSweetness.get(end));
+        arrayListSweetness.set(end, t);
+        return (i + 1);  
     }
 
-    private static void sortByWeight(ArrayList<Sweetness> arrayListSweetness) {
-        if(arrayListSweetness.size() <= 1) return;
+    private static void findSweetnessBySugarContent(Scanner scanner) {
+        DisplayConsoleUI.printFindSweetnessBySugarContentMenu();
+        int min = 0;
+        int max = 0;
+        try {
+            DisplayConsoleUI.printFindSweetnessMin();
+            min = Integer.parseInt(scanner.next());
+            DisplayConsoleUI.printFindSweetnessMax();
+            max = Integer.parseInt(scanner.next());
+            if(min >= 0 && max >= 0 && min <= max) {
+                DisplayConsoleUI.printArrayListSweetness(findSweets(min, max));
+                
+            } else if(min >= 0 && max >= 0 && min > max) {
+                DisplayConsoleUI.printIncorrectInputSugarLimits();
+                
+            } else {
+                DisplayConsoleUI.printIncorrectInputSugarContent();
+            }
+        } catch (NumberFormatException e) {
+            DisplayConsoleUI.printIncorrectInput();
+        }
     }
-
-    private static void sortBySugarContent(ArrayList<Sweetness> arrayListSweetness) {
-        if(arrayListSweetness.size() <= 1) return;
-    }
-
-    private static void sortByPrice(ArrayList<Sweetness> arrayListSweetness) {
-        if(arrayListSweetness.size() <= 1) return;
+    
+    private static ArrayList<Sweetness> findSweets(int min, int max) {
+        ArrayList<Sweetness> sweets = new ArrayList<Sweetness>();
+        for(Sweetness s: arrayListSweetness) {
+            if(s.getSugarContent() >= min && s.getSugarContent() <= max) {
+                sweets.add(s);
+            }
+        }
+        return sweets;
     }
 }

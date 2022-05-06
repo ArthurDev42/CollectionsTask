@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Sweetness implements Serializable {
     
-    private int id;
+    int id;
     private String title;
     private SweetnessType type;
     private int weight;

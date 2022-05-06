@@ -12,6 +12,4 @@ public enum SweetnessType {
     public String getType() {
         return type;
     }
-    
-    
 }
